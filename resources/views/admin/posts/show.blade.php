@@ -9,6 +9,12 @@
             <div class="col">
                 <h1>{{ $post->title }}</h1>
                 <p>{{ $post->content }}</p>
+                {{-- {{dd($post->tags)}} --}}
+                <p>Post Tags:
+                    @foreach ($post->tags as $tag)
+                         {{$tag->name}},
+                    @endforeach
+                </p>
                 <p>Post by: {{$post->user->name}}</p>
                 <p>Contact: {{$post->user->userInfo->phone}}</p>
             </div>

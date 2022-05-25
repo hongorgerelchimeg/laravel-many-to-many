@@ -12,7 +12,7 @@
                 {{-- {{dd($post->tags)}} --}}
                 <p>Post Tags:
                     @foreach ($post->tags as $tag)
-                         {{$tag->name}},
+                         {{$tag->name}} |
                     @endforeach
                 </p>
                 <p>Post by: {{$post->user->name}}</p>

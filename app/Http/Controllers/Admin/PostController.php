@@ -8,6 +8,7 @@ use App\Tag;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -39,13 +40,59 @@ class PostController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::paginate(25);
+        $posts = Post::whereRaw('1 = 1');
 
         Session::put('posts_url', request()->fullUrl());
 
-        return view('admin.posts.index', compact('posts'));
+        if ($request->search) {
+            $posts->where(function($query) use ($request) {
+                $query->where('title', 'LIKE', "%$request->search%")
+                    ->orWhere('content', 'LIKE', "%$request->search%");
+            });
+        }
+
+        if ($request->author) {
+            $posts->where('user_id', $request->author);
+        }
+        // preg_match_all('/#(\checkbox*)/', $formData['content'], $tags_from_content);
+
+        if ($request->checkbox) {
+            // dd($request->checkbox);
+            $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')
+                    ->whereIn('tag_id', $request->checkbox);
+
+            // $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')
+            //         ->whereIn('tag_id', $tags);
+
+        }
+
+
+
+
+        // $requestStr = $request->__toString();
+
+        // if (Str::contains($requestStr, 'check_box')) {
+        //     $checkBoxId = Str::after($requestStr, 'check_box_');
+        //     var_dump($checkBoxId);
+        //     $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')->where('tag_id', $checkBoxId);
+        // }
+
+        $posts = $posts->paginate(20);
+
+        $users = User::all();
+        $tags = Tag::all();
+
+
+        return view('admin.posts.index', [
+            'posts'         => $posts,
+            'users'         => $users,
+            'tags'          => $tags,
+            'request'       => $request
+        ]);
+
+
     }
 
     /**

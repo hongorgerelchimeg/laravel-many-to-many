@@ -7,6 +7,39 @@
         @if (session('deleted'))
             <div class="alert alert-warning">{{ session('deleted') }}</div>
         @endif
+
+        <form action="" method="get">
+            <div class="row row-cols-3 my-3 g-3">
+                <div class="col">
+                    <select class="form-select" aria-label="Default select example" name="author" id="author">
+                        <option value="" selected>Select an author</option>
+
+                        @foreach ($users as $user)
+                            <option value="{{ $user->id }}" @if($user->id == $request->author) selected @endif>{{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col">
+                    <input type="text" class="form-control" id="search-string" name="search" placeholder="{{ __('Search') }}" value="{{ $request->search }}">
+                </div>
+
+                <div class="col">
+                    <button class="btn btn-primary">Search</button>
+                </div>
+            </div>
+            <div class="checkbox-container my-3">
+                @foreach ($tags as $tag)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="checkbox[]" id="{{$tag->slug}}" value="{{$tag->id}}
+                        {{-- @if (in_array($tag->id, old('checkbox', $post->tags->pluck('id')->all()))) checked @endif --}}
+                        ">
+                        <label class="form-check-label" for="{{$tag->slug}}">{{$tag->name}}</label>
+                    </div>
+                @endforeach
+            </div>
+        </form>
+
         <div class="row">
             <div class="col">
                 <table class="table table-dark table-hover">

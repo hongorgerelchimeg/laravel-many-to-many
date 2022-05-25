@@ -56,10 +56,10 @@ class PostController extends Controller
         if ($request->author) {
             $posts->where('user_id', $request->author);
         }
-        // preg_match_all('/#(\checkbox*)/', $formData['content'], $tags_from_content);
+        // preg_match_all('/#(checkbox*)/', $formData['content'], $tags_from_content);
 
         if ($request->checkbox) {
-            // dd($request->checkbox);
+
             $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')
                     ->whereIn('tag_id', $request->checkbox);
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+
 class PostController extends Controller
 {
     private function getValidators($model) {
@@ -60,14 +61,20 @@ class PostController extends Controller
 
         if ($request->checkbox) {
 
-            $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')
-                    ->whereIn('tag_id', $request->checkbox);
-
             // $posts->leftJoin('post_tag', 'posts.id', '=', 'post_id')
+            //         ->whereIn('tag_id', $request->checkbox);
+
+            $tags = $request->checkbox;
+            // dd($tags);
+
+            // $posts->join('post_tag', 'posts.id', '=', 'post_id')
             //         ->whereIn('tag_id', $tags);
-
-        }
-
+            foreach ($tags as $tag) {
+                $posts = $posts->whereHas ('tags', function ($query) use ($tag) {
+                    $query->where('id', $tag);
+                });
+            }
+        };
 
 
 
